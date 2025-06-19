@@ -1,50 +1,273 @@
 @extends('admin.layout')
 
-@section('title', 'Kelola Sales - Admin')
+@section('title', 'Sales & Promotions')
 
 @section('content')
-<div class="container py-5">
-    <div class="flex justify-between items-center mb-4">
-        <h1 class="text-2xl font-bold">Daftar Sales</h1>
-        <a href="{{ route('sales.create') }}" class="btn btn-primary">+ Tambah Sales</a>
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-1">Sales & Promotions</h2>
+            <p class="text-muted mb-0">Kelola semua sale dan promosi toko</p>
+        </div>
+        <a href="{{ route('admin.sales.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Tambah Sale
+        </a>
     </div>
-    <div class="overflow-x-auto">
-        <table class="table table-bordered w-full">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th>Nama</th>
-                    <th>WhatsApp</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($sales as $sale)
-                <tr>
-                    <td>{{ $sale->name }}</td>
-                    <td>{{ $sale->whatsapp }}</td>
-                    <td>
-                        @if($sale->is_active)
-                            <span class="badge bg-success">Aktif</span>
-                        @else
-                            <span class="badge bg-secondary">Nonaktif</span>
-                        @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('sales.edit', $sale) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <form action="{{ route('sales.destroy', $sale) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin hapus sales ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr><td colspan="4" class="text-center text-gray-400">Tidak ada sales.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ $sales->count() }}</h4>
+                            <small>Total Sales</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-percentage fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ $sales->where('is_active', true)->count() }}</h4>
+                            <small>Sale Aktif</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ $sales->where('is_active', false)->count() }}</h4>
+                            <small>Sale Nonaktif</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-pause-circle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ $sales->avg('discount_percentage') ? number_format($sales->avg('discount_percentage'), 1) : 0 }}%</h4>
+                            <small>Rata-rata Diskon</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mt-4">{{ $sales->links() }}</div>
+
+    <!-- Sales Table -->
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2 text-primary"></i>
+                Daftar Sales & Promotions
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="border-0">
+                                <i class="fas fa-image me-2"></i>Foto
+                            </th>
+                            <th class="border-0">
+                                <i class="fas fa-user me-2"></i>Nama Sales
+                            </th>
+                            <th class="border-0">
+                                <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                            </th>
+                            <th class="border-0">
+                                <i class="fas fa-envelope me-2"></i>Email
+                            </th>
+                            <th class="border-0">
+                                <i class="fas fa-align-left me-2"></i>Deskripsi
+                            </th>
+                            <th class="border-0">
+                                <i class="fas fa-toggle-on me-2"></i>Status
+                            </th>
+                            <th class="border-0">
+                                <i class="fas fa-calendar me-2"></i>Dibuat
+                            </th>
+                            <th class="border-0 text-center">
+                                <i class="fas fa-cogs me-2"></i>Aksi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($sales as $sale)
+                        <tr>
+                            <td class="align-middle">
+                                @if($sale->image)
+                                <img src="{{ Storage::url($sale->image) }}" alt="{{ $sale->name }}" class="rounded" style="width: 60px; height: 40px; object-fit: cover;">
+                                @else
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 40px;">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                                @endif
+                            </td>
+                            <td class="align-middle">
+                                <strong>{{ $sale->name }}</strong>
+                            </td>
+                            <td class="align-middle">
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $sale->whatsapp) }}" target="_blank" class="text-success text-decoration-none">
+                                    <i class="fab fa-whatsapp me-1"></i>{{ $sale->whatsapp }}
+                                </a>
+                            </td>
+                            <td class="align-middle">
+                                @if($sale->email)
+                                    <a href="mailto:{{ $sale->email }}">{{ $sale->email }}</a>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+                            <td class="align-middle">
+                                <div class="text-truncate" style="max-width: 200px;" title="{{ $sale->description }}">
+                                    {{ Str::limit($sale->description, 50) }}
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                @if($sale->is_active)
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle me-1"></i>Aktif
+                                </span>
+                                @else
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-pause-circle me-1"></i>Nonaktif
+                                </span>
+                                @endif
+                            </td>
+                            <td class="align-middle">
+                                <small class="text-muted">
+                                    {{ $sale->created_at->format('d M Y') }}
+                                </small>
+                            </td>
+                            <td class="align-middle text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('admin.sales.edit', $sale) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('admin.sales.destroy', $sale) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus sales ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="fas fa-user fa-3x mb-3"></i>
+                                    <h5>Belum ada sales</h5>
+                                    <p>Mulai dengan menambahkan sales pertama Anda</p>
+                                    <a href="{{ route('admin.sales.create') }}" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Tambah Sales Pertama
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if($sales->hasPages())
+    <div class="d-flex justify-content-center mt-4">
+        {{ $sales->links() }}
+    </div>
+    @endif
 </div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 12px;
+}
+
+.card-header {
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.table th {
+    font-weight: 600;
+    color: #2c3e50;
+    border-top: none;
+    padding: 1rem;
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.btn-group .btn {
+    border-radius: 6px;
+    margin: 0 2px;
+}
+
+.btn-group .btn:hover {
+    transform: translateY(-1px);
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+</style>
 @endsection 

@@ -24,10 +24,17 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'is_admin' => 'required|boolean'
+            'is_admin' => 'required|boolean',
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user->update($request->all());
+        $data = $request->only(['name', 'email', 'is_admin']);
+
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user->update($data);
 
         return redirect()->route('admin.users.index')->with('success', 'User berhasil diupdate');
     }

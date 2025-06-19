@@ -1,36 +1,307 @@
 @extends('layouts.app')
 
-@section('title', 'Our Sales Team - Kiansantang Store')
+@section('title', 'Sales Representatives - Kiansantang Store')
 
 @section('content')
 <div class="container py-5">
-    <h1 class="mb-4">Our Sales Team</h1>
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-5">Our Sales Representatives</h1>
+            <p class="text-center text-muted mb-5">Get in touch with our dedicated sales team for personalized assistance and support.</p>
+        </div>
+    </div>
 
-    <div class="row g-4">
+    @if($sales->count() > 0)
+    <div class="sales-grid">
         @foreach($sales as $sale)
-        <div class="col-lg-4 col-md-6">
-            <div class="card h-100">
+        <div class="sales-box">
+            <div class="sales-box-inner">
                 @if($sale->image)
-                <img src="{{ Storage::url($sale->image) }}" class="card-img-top" alt="{{ $sale->name }}" style="height: 300px; object-fit: cover;">
+                <div class="sales-image">
+                    <img src="{{ Storage::url($sale->image) }}" 
+                         alt="{{ $sale->name }}">
+                </div>
                 @else
-                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
-                    <i class="fas fa-user fa-3x text-muted"></i>
+                <div class="sales-image-placeholder">
+                    <i class="fas fa-user"></i>
                 </div>
                 @endif
-                <div class="card-body">
-                    <h5 class="card-title">{{ $sale->name }}</h5>
+                
+                <div class="sales-content">
+                    <h3 class="sales-name">{{ $sale->name }}</h3>
+                    
                     @if($sale->description)
-                    <p class="card-text">{{ $sale->description }}</p>
+                    <p class="sales-description">{{ $sale->description }}</p>
                     @endif
-                    <div class="d-flex gap-2">
-                        <a href="{{ $sale->whatsapp_url }}" target="_blank" class="btn btn-success flex-grow-1">
-                            <i class="fab fa-whatsapp me-2"></i>Contact via WhatsApp
+                    
+                    <div class="sales-actions">
+                        <a href="https://wa.me/{{ $sale->whatsapp }}" 
+                           target="_blank"
+                           class="sales-btn whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp</span>
                         </a>
+                        
+                        @if($sale->email)
+                        <a href="mailto:{{ $sale->email }}" 
+                           class="sales-btn email-btn">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email</span>
+                        </a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
+    @else
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <h3>No Sales Representatives Available</h3>
+        <p>Please check back later or contact us directly.</p>
+    </div>
+    @endif
 </div>
+
+<style>
+/* Sales Grid Layout */
+.sales-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sales Box */
+.sales-box {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+}
+
+.sales-box:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: #e0e0e0;
+}
+
+.sales-box-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Sales Image */
+.sales-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.sales-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.sales-box:hover .sales-image img {
+    transform: scale(1.05);
+}
+
+.sales-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.sales-image-placeholder i {
+    font-size: 4rem;
+    opacity: 0.8;
+}
+
+/* Sales Content */
+.sales-content {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.sales-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+.sales-description {
+    color: #6c757d;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    flex: 1;
+}
+
+/* Sales Actions */
+.sales-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.sales-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    flex: 1;
+    justify-content: center;
+    min-width: 120px;
+}
+
+.whatsapp-btn {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    color: white;
+    border: none;
+}
+
+.whatsapp-btn:hover {
+    background: linear-gradient(135deg, #128c7e 0%, #075e54 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+}
+
+.email-btn {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border: none;
+}
+
+.email-btn:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+.sales-btn i {
+    font-size: 1.1rem;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+}
+
+.empty-state h3 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.empty-state p {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sales-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .sales-content {
+        padding: 1.25rem;
+    }
+    
+    .sales-name {
+        font-size: 1.1rem;
+    }
+    
+    .sales-description {
+        font-size: 0.9rem;
+    }
+    
+    .sales-actions {
+        flex-direction: column;
+    }
+    
+    .sales-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .sales-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .sales-image {
+        height: 180px;
+    }
+    
+    .sales-content {
+        padding: 1rem;
+    }
+    
+    .sales-name {
+        font-size: 1rem;
+    }
+    
+    .sales-description {
+        font-size: 0.85rem;
+    }
+}
+
+/* Container adjustments */
+.container {
+    max-width: 1400px;
+}
+
+/* Page title styling */
+h1 {
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.text-muted {
+    color: #6c757d !important;
+    font-size: 1.1rem;
+}
+</style>
 @endsection 

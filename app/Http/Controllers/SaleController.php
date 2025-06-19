@@ -16,7 +16,7 @@ class SaleController extends Controller
 
     public function create()
     {
-        return view('sales.create');
+        return view('admin.sales.create');
     }
 
     public function store(Request $request)
@@ -26,10 +26,11 @@ class SaleController extends Controller
             'whatsapp' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|image|max:2048',
+            'is_active' => 'boolean',
         ]);
 
-        $validated['is_active'] = true;
+        $validated['is_active'] = $request->has('is_active');
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('sales', 'public');
@@ -37,13 +38,13 @@ class SaleController extends Controller
 
         Sale::create($validated);
 
-        return redirect()->route('sales.index')
+        return redirect()->route('admin.sales.index')
             ->with('success', 'Sales representative added successfully.');
     }
 
     public function edit(Sale $sale)
     {
-        return view('sales.edit', compact('sale'));
+        return view('admin.sales.edit', compact('sale'));
     }
 
     public function update(Request $request, Sale $sale)
@@ -53,8 +54,11 @@ class SaleController extends Controller
             'whatsapp' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|image|max:2048',
+            'is_active' => 'boolean',
         ]);
+
+        $validated['is_active'] = $request->has('is_active');
 
         if ($request->hasFile('image')) {
             if ($sale->image) {
@@ -65,7 +69,7 @@ class SaleController extends Controller
 
         $sale->update($validated);
 
-        return redirect()->route('sales.index')
+        return redirect()->route('admin.sales.index')
             ->with('success', 'Sales representative updated successfully.');
     }
 
@@ -77,7 +81,7 @@ class SaleController extends Controller
         
         $sale->delete();
 
-        return redirect()->route('sales.index')
+        return redirect()->route('admin.sales.index')
             ->with('success', 'Sales representative deleted successfully.');
     }
 
@@ -85,5 +89,15 @@ class SaleController extends Controller
     {
         $sales = \App\Models\Sale::orderByDesc('created_at')->paginate(20);
         return view('admin.sales.index', compact('sales'));
+    }
+
+    public function adminCreate()
+    {
+        return view('admin.sales.create');
+    }
+
+    public function adminEdit(Sale $sale)
+    {
+        return view('admin.sales.edit', compact('sale'));
     }
 } 

@@ -10,12 +10,18 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Api\SalesController;
 use App\Http\Controllers\InfoController;
 use App\Http\Middleware\AdminMiddleware;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/info', [InfoController::class, 'index'])->name('info.index');
+
+// API routes
+Route::get('/api/sales', [SalesController::class, 'index'])->name('api.sales.index');
+Route::get('/api/sales/{id}', [SalesController::class, 'show'])->name('api.sales.show');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -45,30 +51,42 @@ Route::middleware(['auth'])->group(function () {
     // Admin routes
     Route::middleware([AdminMiddleware::class])->group(function () {
         // Product management
-        Route::get('/admin/products/create', [ProductController::class, 'create'])->name('products.create');
-        Route::post('/admin/products', [ProductController::class, 'store'])->name('products.store');
-        Route::get('/admin/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-        Route::put('/admin/products/{product}', [ProductController::class, 'update'])->name('products.update');
-        Route::delete('/admin/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+        Route::get('/admin/products', [ProductController::class, 'adminIndex'])->name('admin.products.index');
+        Route::get('/admin/products/create', [ProductController::class, 'create'])->name('admin.products.create');
+        Route::post('/admin/products', [ProductController::class, 'store'])->name('admin.products.store');
+        Route::get('/admin/products/{product}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+        Route::put('/admin/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
+        Route::delete('/admin/products/{product}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 
         // Category management
-        Route::get('/admin/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-        Route::post('/admin/categories', [CategoryController::class, 'store'])->name('categories.store');
-        Route::get('/admin/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-        Route::put('/admin/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-        Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        Route::get('/admin/categories', [CategoryController::class, 'adminIndex'])->name('admin.categories.index');
+        Route::get('/admin/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+        Route::post('/admin/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+        Route::get('/admin/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+        Route::put('/admin/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+        Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+        
+        // Advanced category features
+        Route::post('/admin/categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('admin.categories.toggle-status');
+        Route::post('/admin/categories/bulk-action', [CategoryController::class, 'bulkAction'])->name('admin.categories.bulk-action');
+        Route::get('/admin/categories/statistics', [CategoryController::class, 'statistics'])->name('admin.categories.statistics');
+        Route::get('/admin/categories/export', [CategoryController::class, 'export'])->name('admin.categories.export');
+        Route::post('/admin/categories/import', [CategoryController::class, 'import'])->name('admin.categories.import');
+        
+        // Category API routes
+        Route::get('/api/categories', [CategoryController::class, 'apiIndex'])->name('api.categories.index');
+        Route::get('/api/categories/{category}', [CategoryController::class, 'apiShow'])->name('api.categories.show');
 
         // Sales management
-        Route::get('/admin/sales/create', [SaleController::class, 'create'])->name('sales.create');
-        Route::post('/admin/sales', [SaleController::class, 'store'])->name('sales.store');
-        Route::get('/admin/sales/{sale}/edit', [SaleController::class, 'edit'])->name('sales.edit');
-        Route::put('/admin/sales/{sale}', [SaleController::class, 'update'])->name('sales.update');
-        Route::delete('/admin/sales/{sale}', [SaleController::class, 'destroy'])->name('sales.destroy');
-
-        // Admin index routes
-        Route::get('/admin/products', [ProductController::class, 'adminIndex'])->name('admin.products.index');
-        Route::get('/admin/categories', [CategoryController::class, 'adminIndex'])->name('admin.categories.index');
         Route::get('/admin/sales', [SaleController::class, 'adminIndex'])->name('admin.sales.index');
+        Route::get('/admin/sales/create', [SaleController::class, 'create'])->name('admin.sales.create');
+        Route::post('/admin/sales', [SaleController::class, 'store'])->name('admin.sales.store');
+        Route::get('/admin/sales/{sale}/edit', [SaleController::class, 'edit'])->name('admin.sales.edit');
+        Route::put('/admin/sales/{sale}', [SaleController::class, 'update'])->name('admin.sales.update');
+        Route::delete('/admin/sales/{sale}', [SaleController::class, 'destroy'])->name('admin.sales.destroy');
+
+        // Banner management
+        Route::resource('admin/banners', BannerController::class, ['as' => 'admin']);
 
         // Admin dashboard
         Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
