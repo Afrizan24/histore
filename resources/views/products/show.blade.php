@@ -381,15 +381,23 @@
                             <span>Now</span>
                         </div>
                     </div>
-                    
                     <div class="chat-messages">
                         <div class="message-bubble outgoing">
                             <div class="message-content" id="messagePreview"></div>
+                            <textarea id="waMessageTextarea" class="form-control d-none" rows="4" style="resize:vertical;"></textarea>
                             <div class="message-time">
                                 <i class="fas fa-check-double"></i>
                                 <span>Now</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="mt-2 text-end">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="editMsgBtn">
+                            <i class="fas fa-edit me-1"></i> Edit Pesan
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm d-none" id="saveMsgBtn">
+                            <i class="fas fa-save me-1"></i> Simpan
+                        </button>
                     </div>
                 </div>
 
@@ -423,24 +431,17 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Action Buttons -->
-                <div class="whatsapp-actions">
-                    <div class="row g-3">
-                        <div class="col-md-8">
-                            <a href="#" id="whatsappLink" class="btn btn-whatsapp btn-lg w-100" target="_blank">
-                                <i class="fab fa-whatsapp me-2"></i>
-                                Buka WhatsApp
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <button type="button" class="btn btn-outline-secondary btn-lg w-100" data-bs-dismiss="modal">
-                                <i class="fas fa-edit me-2"></i>
-                                Edit Pesan
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <form action="" method="POST" id="whatsappChatForm">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <input type="hidden" name="message" id="waMessageInput" value="">
+                    <button type="submit" class="btn btn-whatsapp btn-lg w-100">
+                        <i class="fab fa-whatsapp me-2"></i>
+                        Buka WhatsApp
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -1825,7 +1826,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Generate message
         const message = generateWhatsAppMessage(salesData);
-        document.getElementById('messagePreview').textContent = message;
+        document.getElementById('messagePreview').innerText = message;
+        document.getElementById('waMessageInput').value = message;
         
         // Set WhatsApp link
         const whatsappLink = `https://wa.me/${salesData.phone}?text=${encodeURIComponent(message)}`;
@@ -1913,6 +1915,58 @@ Mohon informasi lebih lanjut mengenai produk ini. Terima kasih! 🙏`;
             }, 2000);
         });
     }
+});
+
+// Data sales dan produk
+const salesData = @json($sales);
+const product = @json($product);
+
+let selectedSaleId = null;
+let defaultMsg = `Halo, saya tertarik dengan produk *${product.name}* (ID: ${product.id})\nHarga: Rp${product.price.toLocaleString('id-ID')}\nWarna: ${product.warna}\nStorage: ${product.storage}\nMohon info lebih lanjut.`;
+
+// Fungsi untuk set preview dan input hidden
+function setMessagePreview(msg) {
+    document.getElementById('messagePreview').innerText = msg;
+    document.getElementById('waMessageInput').value = msg;
+}
+
+// Ketika pilih sales, buka modal pesan dan isi data
+document.querySelectorAll('.sales-card .select-btn').forEach(function(btn, idx) {
+    btn.addEventListener('click', function() {
+        selectedSaleId = salesData[idx].id;
+        document.getElementById('selectedSalesName').textContent = salesData[idx].name;
+        document.getElementById('selectedSalesPhone').textContent = salesData[idx].phone;
+        document.getElementById('whatsappChatForm').action = "{{ url('/sales') }}/" + selectedSaleId + "/chat";
+        setMessagePreview(defaultMsg);
+        document.getElementById('waMessageTextarea').classList.add('d-none');
+        document.getElementById('messagePreview').classList.remove('d-none');
+        document.getElementById('editMsgBtn').classList.remove('d-none');
+        document.getElementById('saveMsgBtn').classList.add('d-none');
+        var waModal = new bootstrap.Modal(document.getElementById('whatsappModal'));
+        waModal.show();
+    });
+});
+
+// Edit/Simpan pesan
+const editBtn = document.getElementById('editMsgBtn');
+const saveBtn = document.getElementById('saveMsgBtn');
+const msgPreview = document.getElementById('messagePreview');
+const msgTextarea = document.getElementById('waMessageTextarea');
+
+editBtn.addEventListener('click', function() {
+    msgTextarea.value = msgPreview.innerText;
+    msgPreview.classList.add('d-none');
+    msgTextarea.classList.remove('d-none');
+    editBtn.classList.add('d-none');
+    saveBtn.classList.remove('d-none');
+});
+
+saveBtn.addEventListener('click', function() {
+    setMessagePreview(msgTextarea.value);
+    msgPreview.classList.remove('d-none');
+    msgTextarea.classList.add('d-none');
+    editBtn.classList.remove('d-none');
+    saveBtn.classList.add('d-none');
 });
 </script>
 @endsection 

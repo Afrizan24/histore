@@ -40,6 +40,7 @@ Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name
 
 // Sales routes
 Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+Route::post('/sales/{sale}/chat', [SaleController::class, 'chat'])->name('sales.chat');
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {
@@ -84,6 +85,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/sales/{sale}/edit', [SaleController::class, 'edit'])->name('admin.sales.edit');
         Route::put('/admin/sales/{sale}', [SaleController::class, 'update'])->name('admin.sales.update');
         Route::delete('/admin/sales/{sale}', [SaleController::class, 'destroy'])->name('admin.sales.destroy');
+        Route::post('/admin/sales/{sale}/toggle-active', [SaleController::class, 'toggleActive'])->name('admin.sales.toggle-active');
+        Route::post('/admin/sales/{sale}/reset-chats', [SaleController::class, 'resetDailyChats'])->name('admin.sales.reset-chats');
 
         // Banner management
         Route::resource('admin/banners', BannerController::class, ['as' => 'admin']);

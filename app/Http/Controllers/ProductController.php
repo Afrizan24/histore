@@ -27,18 +27,18 @@ class ProductController extends Controller
 
         while (true) {
             $query = Product::where('slug', $slug);
-            
+
             if ($excludeId) {
                 $query->where('id', '!=', $excludeId);
             }
-            
+
             if (!$query->exists()) {
                 break;
             }
-            
+
             $slug = $baseSlug . '-' . $counter;
             $counter++;
-            
+
             // Prevent infinite loop
             if ($counter > 100) {
                 $slug = $baseSlug . '-' . time();
@@ -68,9 +68,9 @@ class ProductController extends Controller
         // Search
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -170,7 +170,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'warna' => 'required|string|max:50',
             'kondisi' => 'required|in:New,Second',
-            'storage' => 'required|string|max:50',
+            'storage' => 'nullable|string|max:50',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean'
@@ -238,7 +238,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'warna' => 'required|string|max:50',
             'kondisi' => 'required|in:New,Second',
-            'storage' => 'required|string|max:50',
+            'storage' => 'nullable|string|max:50',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean'
@@ -250,11 +250,11 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             try {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $validated['image'] = $request->file('image')->store('products', 'public');
-                
+                if ($product->image) {
+                    Storage::disk('public')->delete($product->image);
+                }
+                $validated['image'] = $request->file('image')->store('products', 'public');
+
                 // Debug: Log successful upload
                 \Log::info('Image uploaded successfully', [
                     'old_image' => $product->image,
@@ -266,21 +266,21 @@ class ProductController extends Controller
                     'error' => $e->getMessage(),
                     'file' => $request->file('image')->getClientOriginalName()
                 ]);
-                
+
                 return back()->withErrors(['image' => 'Gagal mengupload gambar: ' . $e->getMessage()]);
             }
         }
 
         try {
-        $product->update($validated);
-            
+            $product->update($validated);
+
             // Debug: Log successful update
             \Log::info('Product updated successfully', [
                 'product_id' => $product->id,
                 'updated_fields' => array_keys($validated)
             ]);
 
-        return redirect()->route('admin.products.index')
+            return redirect()->route('admin.products.index')
                 ->with('success', 'Produk berhasil diperbarui.');
         } catch (\Exception $e) {
             // Debug: Log update error
@@ -288,7 +288,7 @@ class ProductController extends Controller
                 'error' => $e->getMessage(),
                 'product_id' => $product->id
             ]);
-            
+
             return back()->withErrors(['general' => 'Gagal memperbarui produk: ' . $e->getMessage()]);
         }
     }
@@ -301,7 +301,7 @@ class ProductController extends Controller
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
-        
+
         $product->delete();
 
         return redirect()->route('admin.products.index')
@@ -315,12 +315,12 @@ class ProductController extends Controller
         // Search functionality
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhereHas('category', function($categoryQuery) use ($search) {
-                      $categoryQuery->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($categoryQuery) use ($search) {
+                        $categoryQuery->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 

@@ -1,17 +1,17 @@
 @extends('admin.layout')
 
-@section('title', 'Sales & Promotions')
+@section('title', 'Sales Representatives')
 
 @section('content')
 <div class="container-fluid">
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="h3 mb-1">Sales & Promotions</h2>
-            <p class="text-muted mb-0">Kelola semua sale dan promosi toko</p>
+            <h2 class="h3 mb-1">Sales Representatives</h2>
+            <p class="text-muted mb-0">Kelola semua sales representative toko</p>
         </div>
         <a href="{{ route('admin.sales.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Tambah Sale
+            <i class="fas fa-plus me-2"></i>Tambah Sales
         </a>
     </div>
 
@@ -22,11 +22,11 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h4 class="mb-0">{{ $sales->count() }}</h4>
+                            <h4 class="mb-0">{{ $sales->total() }}</h4>
                             <small>Total Sales</small>
                         </div>
                         <div class="align-self-center">
-                            <i class="fas fa-percentage fa-2x"></i>
+                            <i class="fas fa-users fa-2x"></i>
                         </div>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4 class="mb-0">{{ $sales->where('is_active', true)->count() }}</h4>
-                            <small>Sale Aktif</small>
+                            <small>Sales Aktif</small>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-check-circle fa-2x"></i>
@@ -53,7 +53,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4 class="mb-0">{{ $sales->where('is_active', false)->count() }}</h4>
-                            <small>Sale Nonaktif</small>
+                            <small>Sales Nonaktif</small>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-pause-circle fa-2x"></i>
@@ -67,11 +67,11 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h4 class="mb-0">{{ $sales->avg('discount_percentage') ? number_format($sales->avg('discount_percentage'), 1) : 0 }}%</h4>
-                            <small>Rata-rata Diskon</small>
+                            <h4 class="mb-0">{{ $sales->where('whatsapp_chats_count', '>=', 5)->count() }}</h4>
+                            <small>Limit Tercapai</small>
                         </div>
                         <div class="align-self-center">
-                            <i class="fas fa-chart-line fa-2x"></i>
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
         <div class="card-header bg-white">
             <h5 class="mb-0">
                 <i class="fas fa-list me-2 text-primary"></i>
-                Daftar Sales & Promotions
+                Daftar Sales Representatives
             </h5>
         </div>
         <div class="card-body p-0">
@@ -105,7 +105,7 @@
                                 <i class="fas fa-envelope me-2"></i>Email
                             </th>
                             <th class="border-0">
-                                <i class="fas fa-align-left me-2"></i>Deskripsi
+                                <i class="fas fa-comments me-2"></i>Chat Hari Ini
                             </th>
                             <th class="border-0">
                                 <i class="fas fa-toggle-on me-2"></i>Status
@@ -146,8 +146,19 @@
                                 @endif
                             </td>
                             <td class="align-middle">
-                                <div class="text-truncate" style="max-width: 200px;" title="{{ $sale->description }}">
-                                    {{ Str::limit($sale->description, 50) }}
+                                @php
+                                    $chatCount = $sale->whatsapp_chats_count ?? 0;
+                                    $isLimitReached = $chatCount >= 5;
+                                @endphp
+                                <div class="d-flex align-items-center">
+                                    <span class="badge {{ $isLimitReached ? 'bg-danger' : ($chatCount > 0 ? 'bg-warning' : 'bg-secondary') }} me-2">
+                                        {{ $chatCount }}/5
+                                    </span>
+                                    @if($isLimitReached)
+                                        <small class="text-danger">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>Limit
+                                        </small>
+                                    @endif
                                 </div>
                             </td>
                             <td class="align-middle">
@@ -171,6 +182,27 @@
                                     <a href="{{ route('admin.sales.edit', $sale) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
+                                    
+                                    <!-- Toggle Active/Inactive -->
+                                    <form action="{{ route('admin.sales.toggle-active', $sale) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm {{ $sale->is_active ? 'btn-outline-secondary' : 'btn-outline-success' }}" 
+                                                title="{{ $sale->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                            <i class="fas {{ $sale->is_active ? 'fa-pause' : 'fa-play' }}"></i>
+                                        </button>
+                                    </form>
+                                    
+                                    <!-- Reset Daily Chats -->
+                                    @if($chatCount > 0)
+                                    <form action="{{ route('admin.sales.reset-chats', $sale) }}" method="POST" class="d-inline" 
+                                          onsubmit="return confirm('Reset chat count untuk hari ini?')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-outline-info" title="Reset Chat Count">
+                                            <i class="fas fa-redo"></i>
+                                        </button>
+                                    </form>
+                                    @endif
+                                    
                                     <form action="{{ route('admin.sales.destroy', $sale) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus sales ini?')">
                                         @csrf
                                         @method('DELETE')

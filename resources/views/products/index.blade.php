@@ -532,16 +532,19 @@
 } */
 /* Product card sama persis dengan featured products */
 .product-card {
-    width: 240px;
     background: #fff;
-    border: 1.5px solid #eee;
-    border-radius: 18px;
-    padding: 18px 16px 16px 16px !important;
-    text-align: center;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-    color: #111;
-    transition: transform 0.18s, box-shadow 0.18s;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+    min-height: 420px;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
     margin: 0 auto;
+    padding: 18px 16px 16px 16px;
+    box-sizing: border-box;
 }
 
 .product-card:hover {
@@ -549,11 +552,25 @@
     box-shadow: 0 8px 32px rgba(0,0,0,0.10);
 }
 
-.product-card img {
+.product-card .product-image, .product-card .card-img-top {
     width: 100%;
+    height: 180px;
+    object-fit: cover;
     border-radius: 12px;
     margin-bottom: 14px;
-    background: #f5f5f5;
+}
+
+.product-card .product-image.w-100.d-flex {
+    height: 180px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+}
+
+.product-card .mt-3 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
 }
 
 .product-card .card-title {
@@ -568,27 +585,6 @@
     color: #111;
     margin-bottom: 10px;
     font-size: 1.1em;
-}
-
-.product-card .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background: #111;
-    color: #fff;
-    border-radius: 22px;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1em;
-    margin-bottom: 8px;
-    border: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: background 0.2s, color 0.2s;
-}
-
-.product-card .btn:hover {
-    background: #fff;
-    color: #111;
-    border: 1.5px solid #111;
 }
 
 .product-card .favorites-count {
