@@ -182,7 +182,9 @@
                                     <a href="{{ route('admin.sales.edit', $sale) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    
+                                    <button type="button" class="btn btn-sm btn-outline-success" title="Lihat Chat" onclick="showChatModal({{ $sale->id }})">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </button>
                                     <!-- Toggle Active/Inactive -->
                                     <form action="{{ route('admin.sales.toggle-active', $sale) }}" method="POST" class="d-inline">
                                         @csrf
@@ -191,7 +193,6 @@
                                             <i class="fas {{ $sale->is_active ? 'fa-pause' : 'fa-play' }}"></i>
                                         </button>
                                     </form>
-                                    
                                     <!-- Reset Daily Chats -->
                                     @if($chatCount > 0)
                                     <form action="{{ route('admin.sales.reset-chats', $sale) }}" method="POST" class="d-inline" 
@@ -202,7 +203,6 @@
                                         </button>
                                     </form>
                                     @endif
-                                    
                                     <form action="{{ route('admin.sales.destroy', $sale) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus sales ini?')">
                                         @csrf
                                         @method('DELETE')
@@ -302,4 +302,21 @@
     }
 }
 </style>
-@endsection 
+@endsection
+
+@push('scripts')
+<script>
+function showChatModal(saleId) {
+    // Hapus modal lama jika ada
+    $("#chatModal-"+saleId).remove();
+    // Load modal via AJAX
+    $.get("/admin/sales/"+saleId+"/chats", function(html) {
+        $("body").append(html);
+        var modal = new bootstrap.Modal(document.getElementById('chatModal-'+saleId));
+        modal.show();
+        // Hapus modal dari DOM setelah ditutup
+        $("#chatModal-"+saleId).on('hidden.bs.modal', function(){ $(this).remove(); });
+    });
+}
+</script>
+@endpush 

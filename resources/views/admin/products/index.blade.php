@@ -7,8 +7,8 @@
 <div class="page-header mb-4">
     <div class="row align-items-center">
         <div class="col-md-8">
-            <h1 class="page-title">Product Management</h1>
-            <p class="page-subtitle">Kelola semua produk dalam sistem toko Anda</p>
+            {{-- <h1 class="page-title">Product Management</h1> --}}
+            <h1 class="page-title">Kelola semua produk dalam sistem toko Anda</h1>
         </div>
         <div class="col-md-4 text-end">
             <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-lg">
@@ -34,7 +34,7 @@
                         <span class="input-group-text">
                             <i class="fas fa-search"></i>
                         </span>
-                        <input type="text" class="form-control" id="search" name="search" 
+                        <input type="text" class="form-control" id="search" name="search"
                                value="{{ request('search') }}" placeholder="Product name...">
                     </div>
                 </div>
@@ -113,8 +113,8 @@
                         <td class="product-image-cell">
                             <div class="product-image-wrapper">
                                 @if($product->image)
-                                    <img src="{{ Storage::url($product->image) }}" 
-                                         alt="{{ $product->name }}" 
+                                    <img src="{{ Storage::url($product->image) }}"
+                                         alt="{{ $product->name }}"
                                          class="product-image">
                                 @else
                                     <div class="product-image-placeholder">
@@ -162,25 +162,25 @@
                             </td>
                         <td class="product-actions-cell">
                             <div class="action-buttons">
-                                <a href="{{ route('admin.products.edit', $product) }}" 
-                                   class="action-btn action-btn-edit" 
+                                <a href="{{ route('admin.products.edit', $product) }}"
+                                   class="action-btn action-btn-edit"
                                    title="Edit Product">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                <a href="{{ route('products.show', $product) }}" 
-                                   class="action-btn action-btn-view" 
-                                   title="View Details" 
+                                <a href="{{ route('products.show', $product) }}"
+                                   class="action-btn action-btn-view"
+                                   title="View Details"
                                    target="_blank">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <form action="{{ route('admin.products.destroy', $product) }}" 
-                                      method="POST" 
-                                      class="d-inline" 
+                                <form action="{{ route('admin.products.destroy', $product) }}"
+                                      method="POST"
+                                      class="d-inline"
                                       onsubmit="return confirm('Are you sure you want to delete this product?')">
                                         @csrf
                                         @method('DELETE')
-                                    <button type="submit" 
-                                            class="action-btn action-btn-delete" 
+                                    <button type="submit"
+                                            class="action-btn action-btn-delete"
                                             title="Delete Product">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -588,47 +588,47 @@
     .page-header {
         padding: 1.5rem;
     }
-    
+
     .page-title {
         font-size: 1.5rem;
     }
-    
+
     .search-filter-body {
         padding: 1rem;
     }
-    
+
     .products-table-header {
         padding: 1rem;
     }
-    
+
     .table thead th,
     .table tbody td {
         padding: 0.75rem;
     }
-    
+
     .action-buttons {
         flex-direction: column;
         gap: 0.25rem;
     }
-    
+
     .action-btn {
         width: 30px;
         height: 30px;
         font-size: 0.8rem;
     }
-    
+
     .specs-info {
         font-size: 0.8rem;
     }
-    
+
     .product-name {
         font-size: 0.9rem;
     }
-    
+
     .product-description {
         font-size: 0.8rem;
     }
-    
+
     .pagination .page-link {
         min-width: 32px;
         min-height: 32px;
@@ -637,4 +637,4 @@
     }
 }
 </style>
-@endsection 
+@endsection

@@ -79,7 +79,8 @@ class SaleController extends Controller
 
     public function edit(Sale $sale)
     {
-        return view('admin.sales.edit', compact('sale'));
+        $chats = $sale->whatsappChats()->orderByDesc('chatted_at')->get();
+        return view('admin.sales.edit', compact('sale', 'chats'));
     }
 
     public function update(Request $request, Sale $sale)
@@ -136,7 +137,8 @@ class SaleController extends Controller
 
     public function adminEdit(Sale $sale)
     {
-        return view('admin.sales.edit', compact('sale'));
+        $chats = $sale->whatsappChats()->orderByDesc('chatted_at')->get();
+        return view('admin.sales.edit', compact('sale', 'chats'));
     }
 
     public function toggleActive(Sale $sale)
@@ -157,6 +159,19 @@ class SaleController extends Controller
             
         return redirect()->route('admin.sales.index')
             ->with('success', 'Daily chat count reset successfully.');
+    }
+
+    public function deleteChat(Sale $sale, $chatId)
+    {
+        $chat = $sale->whatsappChats()->where('id', $chatId)->firstOrFail();
+        $chat->delete();
+        return back()->with('success', 'Sesi chat berhasil dihapus.');
+    }
+
+    public function adminChats(Sale $sale)
+    {
+        $chats = $sale->whatsappChats()->with(['user','product'])->orderByDesc('chatted_at')->get();
+        return view('admin.sales.partials.chats_modal', compact('sale', 'chats'));
     }
 
     private function notifyAdminAboutLimitReached(Sale $sale)

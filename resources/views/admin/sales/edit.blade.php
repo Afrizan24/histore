@@ -115,6 +115,58 @@
                     </form>
                 </div>
             </div>
+            <div class="card mt-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fab fa-whatsapp me-2 text-success"></i>
+                        Riwayat Sesi Chat WhatsApp
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    @if($chats->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Waktu</th>
+                                    <th>User</th>
+                                    <th>IP</th>
+                                    <th>User Agent</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($chats as $i => $chat)
+                                <tr>
+                                    <td>{{ $i+1 }}</td>
+                                    <td>{{ $chat->chatted_at->format('d M Y H:i') }}</td>
+                                    <td>
+                                        @if($chat->user)
+                                            <span class="badge bg-primary">{{ $chat->user->name }}</span>
+                                        @else
+                                            <span class="text-muted">Guest</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $chat->visitor_ip }}</td>
+                                    <td style="max-width:200px;overflow:auto;">{{ $chat->visitor_user_agent }}</td>
+                                    <td>
+                                        <form action="{{ route('admin.sales.chat.delete', [$sale->id, $chat->id]) }}" method="POST" onsubmit="return confirm('Hapus sesi chat ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @else
+                    <div class="p-4 text-center text-muted">Belum ada sesi chat WhatsApp.</div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>

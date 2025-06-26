@@ -24,9 +24,9 @@
             @if($banners->count() > 1)
             <div class="carousel-indicators">
                 @foreach($banners as $index => $banner)
-                <button type="button" 
-                        data-bs-target="#bannerCarousel" 
-                        data-bs-slide-to="{{ $index }}" 
+                <button type="button"
+                        data-bs-target="#bannerCarousel"
+                        data-bs-slide-to="{{ $index }}"
                         class="{{ $index === 0 ? 'active' : '' }}"
                         aria-current="{{ $index === 0 ? 'true' : 'false' }}"
                         aria-label="Slide {{ $index + 1 }}">
@@ -40,13 +40,13 @@
                 @foreach($banners as $index => $banner)
                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                     <div class="banner-slide position-relative">
-                        <img src="{{ Storage::url($banner->image) }}" 
-                             class="d-block w-100 banner-image" 
+                        <img src="{{ Storage::url($banner->image) }}"
+                             class="d-block w-100 banner-image"
                              alt="{{ $banner->title }}"
                              loading="eager"
                              onload="this.style.opacity='1'"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        
+
                         <!-- Fallback for failed images -->
                         <div class="banner-fallback" style="display: none;">
                             <div class="fallback-content">
@@ -54,7 +54,7 @@
                                 <h3 class="text-white">{{ $banner->title }}</h3>
                             </div>
                         </div>
-                        
+
                         <!-- Banner Content Overlay -->
                         <div class="banner-content">
                             <div class="container">
@@ -70,7 +70,7 @@
                                             </p>
                                             @endif
                                             @if($banner->button_text && $banner->button_url)
-                                            <a href="{{ $banner->button_url }}" 
+                                            <a href="{{ $banner->button_url }}"
                                                class="btn btn-light btn-lg px-4 py-2 fw-bold">
                                                 {{ $banner->button_text }}
                                             </a>
@@ -116,7 +116,7 @@
             <div class="col-lg-8">
                     <h1 class="hero-title">Welcome to Kiansantang Store</h1>
                     <p class="hero-subtitle">Discover the latest Apple products with the best prices and quality guaranteed. We provide authentic products with excellent customer service.</p>
-                    
+
                     <div class="hero-buttons">
                         <a href="{{ route('products.all') }}" class="hero-btn hero-btn-primary">
                             <i class="fas fa-shopping-bag"></i>
@@ -127,7 +127,7 @@
                             Featured Items
                         </a>
                     </div>
-                    
+
                     <div class="hero-stats">
                         <div class="hero-stat">
                             <span class="hero-stat-number">500+</span>
@@ -306,9 +306,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(0,0,0,0.3) 0%, 
-        rgba(0,0,0,0.1) 50%, 
+    background: linear-gradient(135deg,
+        rgba(0,0,0,0.3) 0%,
+        rgba(0,0,0,0.1) 50%,
         rgba(0,0,0,0.3) 100%);
     z-index: 1;
     pointer-events: none;
@@ -353,7 +353,7 @@
     .banner-image {
         object-position: center 25%;
     }
-    
+
     .banner-image[data-aspect="portrait"] {
         object-position: center 15%;
     }
@@ -363,7 +363,7 @@
     .banner-image {
         object-position: center 30%;
     }
-    
+
     .banner-image[data-aspect="portrait"] {
         object-position: center 25%;
     }
@@ -373,7 +373,7 @@
     .banner-image {
         object-position: center 40%;
     }
-    
+
     .banner-image[data-aspect="portrait"] {
         object-position: center 35%;
     }
@@ -418,9 +418,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(0,0,0,0.7) 0%, 
-        rgba(0,0,0,0.4) 50%, 
+    background: linear-gradient(135deg,
+        rgba(0,0,0,0.7) 0%,
+        rgba(0,0,0,0.4) 50%,
         rgba(0,0,0,0.2) 100%);
     display: flex;
     align-items: center;
@@ -753,86 +753,86 @@
     .banner-loading {
         height: 450px;
     }
-    
+
     .banner-title {
         font-size: 2.5rem;
         margin-bottom: 1rem;
     }
-    
+
     .banner-description {
         font-size: 1.1rem;
         margin-bottom: 1.5rem;
     }
-    
+
     .banner-text {
         padding: 1.5rem;
         max-width: 100%;
     }
-    
+
     .carousel-control-prev,
     .carousel-control-next {
         width: 50px;
         height: 50px;
     }
-    
+
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
         width: 1.5rem;
         height: 1.5rem;
     }
-    
+
     .carousel-indicators {
         bottom: 20px;
     }
-    
+
     .carousel-indicators button {
         width: 10px;
         height: 10px;
         margin: 0 3px;
     }
-    
+
     /* Hero Section Mobile */
     .hero-section {
         padding: 60px 0;
     }
-    
+
     .hero-title {
         font-size: 2.5rem;
         margin-bottom: 1rem;
     }
-    
+
     .hero-subtitle {
         font-size: 1.1rem;
         margin-bottom: 1.5rem;
     }
-    
+
     .hero-buttons {
         flex-direction: column;
         gap: 0.75rem;
     }
-    
+
     .hero-btn {
         width: 100%;
         justify-content: center;
     }
-    
+
     .hero-stats {
         flex-direction: column;
         gap: 1.5rem;
         margin-top: 2rem;
     }
-    
+
     .hero-stat {
         display: flex;
         align-items: center;
         justify-content: space-between;
         text-align: left;
     }
-    
+
     .hero-visual {
         margin-top: 2rem;
     }
-    
+
     .hero-visual i {
         font-size: 4rem !important;
     }
@@ -843,75 +843,76 @@
     .banner-loading {
         height: 350px;
     }
-    
+
     .banner-title {
         font-size: 2rem;
         margin-bottom: 0.75rem;
     }
-    
+
     .banner-description {
         font-size: 1rem;
         margin-bottom: 1rem;
     }
-    
+
     .banner-text {
         padding: 1rem;
     }
-    
+
     .banner-content .btn {
         font-size: 1rem;
         padding: 0.75rem 1.5rem;
     }
-    
+
     .carousel-control-prev,
     .carousel-control-next {
         width: 40px;
         height: 40px;
     }
-    
+
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
         width: 1.25rem;
         height: 1.25rem;
     }
-    
+
     .carousel-indicators {
         bottom: 15px;
     }
-    
+
     .carousel-indicators button {
         width: 8px;
         height: 8px;
         margin: 0 2px;
     }
-    
+
     /* Hero Section Small Mobile */
     .hero-section {
         padding: 40px 0;
     }
-    
+
     .hero-title {
         font-size: 2rem;
         margin-bottom: 0.75rem;
     }
-    
+
     .hero-subtitle {
         font-size: 1rem;
         margin-bottom: 1rem;
     }
-    
+
     .hero-stat-number {
         font-size: 2rem;
     }
-    
+
     .hero-stat-label {
         font-size: 0.8rem;
     }
-    
+
     .hero-visual i {
         font-size: 3rem !important;
     }
 }
+
 
 /* Ensure carousel container has proper z-index */
 .carousel {
@@ -936,7 +937,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const bannerImages = document.querySelectorAll('#bannerCarousel img[src]');
     const totalImages = bannerImages.length;
     let loadedImages = 0;
-    
+
     if (totalImages > 0) {
         bannerImages.forEach(img => {
             const image = new Image();
@@ -958,7 +959,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             image.src = img.src;
         });
-        
+
         // Fallback: show carousel after 4 seconds even if images haven't loaded
         setTimeout(() => {
             if (document.getElementById('bannerLoading').style.display !== 'none') {
@@ -969,11 +970,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // No images to load, show carousel immediately
         showBannerCarousel();
     }
-    
+
     function detectAndSetAspectRatio(imgElement, width, height) {
         const aspectRatio = width / height;
         let aspectType = 'landscape';
-        
+
         if (aspectRatio < 0.8) {
             aspectType = 'portrait';
         } else if (aspectRatio > 1.2) {
@@ -981,9 +982,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             aspectType = 'square';
         }
-        
+
         imgElement.setAttribute('data-aspect', aspectType);
-        
+
         // Apply custom positioning based on aspect ratio
         if (aspectType === 'portrait') {
             imgElement.style.objectPosition = 'center 20%';
@@ -993,37 +994,51 @@ document.addEventListener('DOMContentLoaded', function() {
             imgElement.style.objectPosition = 'center center';
         }
     }
-    
+
     function showBannerCarousel() {
         const loadingElement = document.getElementById('bannerLoading');
         const carouselElement = document.getElementById('bannerCarousel');
-        
+
         if (loadingElement && carouselElement) {
             // Start fade out animation for loading skeleton
             const skeletonContent = loadingElement.querySelector('.skeleton-content');
             if (skeletonContent) {
                 skeletonContent.classList.add('fade-out');
             }
-            
+
             // Fade out the entire loading section
             setTimeout(() => {
                 loadingElement.classList.add('fade-out');
             }, 300);
-            
+
             // Show carousel after loading fade out
             setTimeout(() => {
                 loadingElement.style.display = 'none';
                 carouselElement.style.display = 'block';
-                
+
                 // Initialize Bootstrap carousel
                 const carousel = new bootstrap.Carousel(carouselElement, {
                     interval: 5000,
                     wrap: true
                 });
-                
+
+                // --- Tambahan: pastikan teks pada slide aktif langsung muncul ---
+                const activeSlide = carouselElement.querySelector('.carousel-item.active');
+                if (activeSlide) {
+                    const bannerContent = activeSlide.querySelector('.banner-content');
+                    if (bannerContent) {
+                        bannerContent.classList.add('show');
+                    }
+                    // Jika pakai efek gambar, pastikan juga .loaded pada gambar
+                    const bannerImage = activeSlide.querySelector('.banner-image');
+                    if (bannerImage) {
+                        bannerImage.classList.add('loaded');
+                    }
+                }
+
                 // Start carousel animations
                 animateCarouselElements();
-                
+
                 // Initialize controls immediately after carousel is shown
                 setTimeout(() => {
                     initializeCarouselControls();
@@ -1032,7 +1047,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 800);
         }
     }
-    
+
     function animateCarouselElements() {
         // Animate carousel indicators
         setTimeout(() => {
@@ -1041,7 +1056,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 indicators.classList.add('show');
             }
         }, 1000);
-        
+
         // Animate carousel controls
         setTimeout(() => {
             const controls = document.querySelectorAll('.carousel-control-prev, .carousel-control-next');
@@ -1050,13 +1065,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }, 1200);
     }
-    
+
     // Handle image load events for individual images with smooth transitions
     document.querySelectorAll('.banner-image').forEach(img => {
         img.addEventListener('load', function() {
             // Add loaded class for smooth transition
             this.classList.add('loaded');
-            
+
             // Show banner content after image is loaded
             setTimeout(() => {
                 const bannerContent = this.closest('.banner-slide').querySelector('.banner-content');
@@ -1065,7 +1080,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 500);
         });
-        
+
         img.addEventListener('error', function() {
             this.style.display = 'none';
             const fallback = this.nextElementSibling;
@@ -1074,7 +1089,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     // Add smooth transitions for carousel slide changes
     const carouselElement = document.getElementById('bannerCarousel');
     if (carouselElement) {
@@ -1082,7 +1097,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const activeSlide = event.relatedTarget;
             const bannerContent = activeSlide.querySelector('.banner-content');
             const bannerImage = activeSlide.querySelector('.banner-image');
-            
+
             // Reset animations for new slide
             if (bannerContent) {
                 bannerContent.classList.remove('show');
@@ -1090,13 +1105,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     bannerContent.classList.add('show');
                 }, 100);
             }
-            
+
             if (bannerImage && !bannerImage.classList.contains('loaded')) {
                 bannerImage.classList.add('loaded');
             }
         });
     }
-    
+
     // Add hover effects for carousel controls
     document.addEventListener('mouseover', function(e) {
         if (e.target.closest('.carousel-control-prev') || e.target.closest('.carousel-control-next')) {
@@ -1104,14 +1119,14 @@ document.addEventListener('DOMContentLoaded', function() {
             control.style.opacity = '1';
         }
     });
-    
+
     document.addEventListener('mouseout', function(e) {
         if (e.target.closest('.carousel-control-prev') || e.target.closest('.carousel-control-next')) {
             const control = e.target.closest('.carousel-control-prev, .carousel-control-next');
             control.style.opacity = '0.9';
         }
     });
-    
+
     // Add click event listeners for carousel controls
     document.addEventListener('click', function(e) {
         if (e.target.closest('.carousel-control-prev')) {
@@ -1124,7 +1139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-        
+
         if (e.target.closest('.carousel-control-next')) {
             console.log('Next button clicked');
             const carousel = document.getElementById('bannerCarousel');
@@ -1135,12 +1150,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-        
+
         if (e.target.closest('.carousel-indicators button')) {
             console.log('Indicator button clicked');
         }
     });
-    
+
     // Ensure carousel controls are properly initialized
     function initializeCarouselControls() {
         const carousel = document.getElementById('bannerCarousel');
@@ -1148,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Remove any existing event listeners
             const prevButton = carousel.querySelector('.carousel-control-prev');
             const nextButton = carousel.querySelector('.carousel-control-next');
-            
+
             if (prevButton) {
                 prevButton.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1160,7 +1175,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }
-            
+
             if (nextButton) {
                 nextButton.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1172,7 +1187,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }
-            
+
             // Add indicator click listeners
             const indicators = carousel.querySelectorAll('.carousel-indicators button');
             indicators.forEach((indicator, index) => {
@@ -1188,7 +1203,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    
+
     // Add intersection observer for performance optimization
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
@@ -1203,12 +1218,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }, {
             threshold: 0.1
         });
-        
+
         document.querySelectorAll('.banner-image').forEach(img => {
             observer.observe(img);
         });
     }
-    
+
     // Add window resize handler for responsive positioning
     window.addEventListener('resize', function() {
         const bannerImages = document.querySelectorAll('.banner-image');

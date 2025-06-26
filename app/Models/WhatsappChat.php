@@ -13,6 +13,8 @@ class WhatsappChat extends Model
     protected $fillable = [
         'sale_id',
         'user_id',
+        'product_id',
+        'message',
         'visitor_ip',
         'visitor_user_agent',
         'chatted_at'
@@ -30,6 +32,11 @@ class WhatsappChat extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(\App\Models\Product::class);
     }
 
     /**
@@ -59,6 +66,8 @@ class WhatsappChat extends Model
         return self::create([
             'sale_id' => $saleId,
             'user_id' => $userId,
+            'product_id' => $request ? $request->input('product_id') : null,
+            'message' => $request ? $request->input('message') : null,
             'visitor_ip' => $request ? $request->ip() : null,
             'visitor_user_agent' => $request ? $request->userAgent() : null,
             'chatted_at' => now(),

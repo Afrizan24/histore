@@ -219,7 +219,7 @@
     transform: translateY(-2px);
 }
 
-.pagination .page-link:focus, 
+.pagination .page-link:focus,
 .pagination .page-link:hover {
     background: #f8f9fa;
     color: #000000;
@@ -261,7 +261,7 @@
         font-size: 0.9rem;
         border-radius: 10px;
     }
-    
+
     .pagination {
         gap: 0.3rem;
     }
@@ -275,7 +275,7 @@
         font-size: 0.85rem;
         border-radius: 8px;
     }
-    
+
     .pagination {
         gap: 0.25rem;
     }
@@ -531,19 +531,27 @@
     justify-content: center;
 } */
 /* Product card sama persis dengan featured products */
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* jarak antar card */
+  justify-content: center;
+  align-items: stretch; /* semua card punya tinggi sama */
+}
+
 .product-card {
+    display: flex;
+    flex-direction: column;
     background: #fff;
     border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     overflow: hidden;
     transition: all 0.3s ease;
     border: 1px solid #f0f0f0;
     min-height: 420px;
     max-width: 320px;
-    display: flex;
-    flex-direction: column;
     margin: 0 auto;
-    padding: 18px 16px 16px 16px;
+    padding: 18px 16px 16px;
     box-sizing: border-box;
 }
 
@@ -600,15 +608,15 @@
 
 /* Responsive Design untuk Product Card - sama dengan featured products */
 @media (max-width: 900px) {
-    .product-card { 
-        width: 100%; 
-        max-width: 320px; 
+    .product-card {
+        width: 100%;
+        max-width: 320px;
     }
 }
 
 @media (max-width: 576px) {
-    .product-card { 
-        padding: 12px 4px 12px 4px !important; 
+    .product-card {
+        padding: 12px 4px 12px 4px !important;
     }
 }
 </style>
@@ -649,4 +657,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
-@endsection 
+@endsection

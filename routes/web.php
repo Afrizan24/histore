@@ -87,6 +87,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/admin/sales/{sale}', [SaleController::class, 'destroy'])->name('admin.sales.destroy');
         Route::post('/admin/sales/{sale}/toggle-active', [SaleController::class, 'toggleActive'])->name('admin.sales.toggle-active');
         Route::post('/admin/sales/{sale}/reset-chats', [SaleController::class, 'resetDailyChats'])->name('admin.sales.reset-chats');
+        Route::delete('/admin/sales/{sale}/chats/{chat}', [SaleController::class, 'deleteChat'])->name('admin.sales.chat.delete');
+        Route::get('/admin/sales/{sale}/chats', [SaleController::class, 'adminChats'])->name('admin.sales.chats');
 
         // Banner management
         Route::resource('admin/banners', BannerController::class, ['as' => 'admin']);
