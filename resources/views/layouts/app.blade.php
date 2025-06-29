@@ -242,7 +242,7 @@
     <header>
         <div class="topbar">
             <a href="{{ route('home') }}">
-                <img src="{{ asset('storage/th.jpg') }}" alt="HiStore Logo" class="logo" />
+                <img src="{{ asset('storage/th.png') }}" alt="HiStore Logo" class="logo" />
             </a>
             <form class="search-container" method="GET" action="{{ route('products.all') }}" id="topbarSearchForm">
                 <input type="text" name="search" class="search-bar" placeholder="Cari produk..." value="{{ request('search') }}">

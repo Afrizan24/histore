@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
             Category::firstOrCreate(['slug' => $category['slug']], $category);
         }
 
-        // Create products with more variations
         $products = [
             // iPhone Products
             [
