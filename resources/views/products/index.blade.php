@@ -78,7 +78,22 @@
                 </div>
             </div>
             @endif
-            @if(request('sort') || (request('warna') && request('warna') !== 'all') || (request('kondisi') && request('kondisi') !== 'all') || (request('storage') && request('storage') !== 'all'))
+            <div class="modern-filter-group">
+                <button class="modern-filter-btn" id="stockDropdownBtn" type="button">
+                    <i class="fas fa-boxes me-1"></i>
+                    {{ request('stock') && request('stock') !== 'all' ? 
+                        (request('stock') === 'in_stock' ? 'Tersedia' : 
+                        (request('stock') === 'low_stock' ? 'Stok Menipis' : 'Habis')) : 'Stok' }}
+                    <i class="fas fa-chevron-down ms-1"></i>
+                </button>
+                <div class="modern-dropdown" id="stockDropdown">
+                    <a href="?{{ http_build_query(array_merge(request()->except('stock'), ['stock' => 'all'])) }}" class="dropdown-item{{ !request('stock') || request('stock') === 'all' ? ' active' : '' }}">Semua Stok</a>
+                    <a href="?{{ http_build_query(array_merge(request()->except('stock'), ['stock' => 'in_stock'])) }}" class="dropdown-item{{ request('stock') == 'in_stock' ? ' active' : '' }}">Tersedia</a>
+                    <a href="?{{ http_build_query(array_merge(request()->except('stock'), ['stock' => 'low_stock'])) }}" class="dropdown-item{{ request('stock') == 'low_stock' ? ' active' : '' }}">Stok Menipis</a>
+                    <a href="?{{ http_build_query(array_merge(request()->except('stock'), ['stock' => 'out_of_stock'])) }}" class="dropdown-item{{ request('stock') == 'out_of_stock' ? ' active' : '' }}">Habis</a>
+                </div>
+            </div>
+            @if(request('sort') || (request('warna') && request('warna') !== 'all') || (request('kondisi') && request('kondisi') !== 'all') || (request('storage') && request('storage') !== 'all') || (request('stock') && request('stock') !== 'all'))
             <div class="modern-filter-group">
                 <a href="{{ route('products.all') }}" class="btn btn-reset-filter"><i class="fas fa-times me-1"></i>Reset</a>
             </div>
@@ -105,6 +120,9 @@
             @if(request('storage') && request('storage') !== 'all')
                 <span class="filter-badge"><i class="fas fa-hdd me-1"></i>{{ request('storage') }}</span>
             @endif
+            @if(request('stock') && request('stock') !== 'all')
+                <span class="filter-badge"><i class="fas fa-boxes me-1"></i>{{ request('stock') === 'in_stock' ? 'Tersedia' : (request('stock') === 'low_stock' ? 'Stok Menipis' : 'Habis') }}</span>
+            @endif
         </div>
     </div>
     <div class="row g-4">
@@ -126,6 +144,10 @@
                             <i class="fas fa-heart"></i>
                         </button>
                     </form>
+                    @else
+                    <button type="button" class="btn-favorite position-absolute top-0 end-0 m-2 @isFavorite($product->id) favorited @endisFavorite" onclick="toggleFavorite({{ $product->id }})" id="favorite-btn-{{ $product->id }}">
+                        <i class="fas fa-heart @isFavorite($product->id) favorited @endisFavorite"></i>
+                    </button>
                     @endauth
                 </div>
                 <div class="mt-3">
@@ -136,8 +158,14 @@
                         <span class="badge bg-{{ $product->kondisi === 'New' ? 'success' : 'warning' }} text-white"><i class="fas fa-{{ $product->kondisi === 'New' ? 'star' : 'certificate' }} me-1"></i>{{ $product->kondisi }}</span>
                         <span class="badge bg-secondary text-white"><i class="fas fa-hdd me-1"></i>{{ $product->storage }}</span>
                     </div>
-                    <p class="favorites-count">
-                        <i class="fas fa-heart"></i> {{ $product->favorites_count }} terfavorite
+                    <div class="stock-info mb-2 text-center">
+                        <span class="badge bg-{{ $product->stock > 5 ? 'success' : ($product->stock > 0 ? 'warning' : 'danger') }}">
+                            <i class="fas fa-boxes me-1"></i>
+                            {{ $product->stock > 0 ? $product->stock . ' tersedia' : 'Habis' }}
+                        </span>
+                    </div>
+                    <p class="favorites-count" id="favorites-count-{{ $product->id }}">
+                        <i class="fas fa-heart"></i> @totalFavorites($product->id) terfavorite
                     </p>
                     <div class="d-flex gap-2">
                         <a href="{{ route('products.show', $product->slug) }}" class="btn btn-primary btn-sm flex-grow-1">View Details</a>
@@ -634,6 +662,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {btn: 'warnaDropdownBtn', dd: 'warnaDropdown'},
         {btn: 'kondisiDropdownBtn', dd: 'kondisiDropdown'},
         {btn: 'storageDropdownBtn', dd: 'storageDropdown'},
+        {btn: 'stockDropdownBtn', dd: 'stockDropdown'},
     ];
     dropdowns.forEach(({btn, dd}) => {
         const btnEl = document.getElementById(btn);

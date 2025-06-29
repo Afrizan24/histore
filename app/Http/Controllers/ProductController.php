@@ -102,6 +102,21 @@ class ProductController extends Controller
             $query->where('storage', $request->storage);
         }
 
+        // Filter by stock status
+        if ($request->has('stock') && $request->stock !== '' && $request->stock !== 'all') {
+            switch ($request->stock) {
+                case 'in_stock':
+                    $query->where('stock', '>', 5);
+                    break;
+                case 'low_stock':
+                    $query->where('stock', '>', 0)->where('stock', '<=', 5);
+                    break;
+                case 'out_of_stock':
+                    $query->where('stock', 0);
+                    break;
+            }
+        }
+
         // Sort
         if ($request->has('sort') && $request->sort !== '') {
             switch ($request->sort) {
@@ -168,11 +183,12 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
             'warna' => 'required|string|max:50',
             'kondisi' => 'required|in:New,Second',
             'storage' => 'nullable|string|max:50',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean'
         ]);
 
@@ -236,6 +252,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
             'warna' => 'required|string|max:50',
             'kondisi' => 'required|in:New,Second',
             'storage' => 'nullable|string|max:50',
@@ -332,6 +349,21 @@ class ProductController extends Controller
         // Filter by condition
         if ($request->has('condition') && $request->condition !== '') {
             $query->where('kondisi', $request->condition);
+        }
+
+        // Filter by stock status
+        if ($request->has('stock') && $request->stock !== '') {
+            switch ($request->stock) {
+                case 'in_stock':
+                    $query->where('stock', '>', 5);
+                    break;
+                case 'low_stock':
+                    $query->where('stock', '>', 0)->where('stock', '<=', 5);
+                    break;
+                case 'out_of_stock':
+                    $query->where('stock', 0);
+                    break;
+            }
         }
 
         // Sort
