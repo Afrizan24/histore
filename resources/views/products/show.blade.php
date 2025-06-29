@@ -85,11 +85,21 @@
                         </div>
                         <div class="spec-item">
                             <div class="spec-label">
+                                <i class="fas fa-boxes me-2"></i>Stok
+                            </div>
+                            <div class="spec-value">
+                                <span class="badge bg-{{ $product->stock > 5 ? 'success' : ($product->stock > 0 ? 'warning' : 'danger') }}">
+                                    {{ $product->stock > 0 ? $product->stock . ' tersedia' : 'Habis' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-label">
                                 <i class="fas fa-heart me-2"></i>Favorit
                             </div>
                             <div class="spec-value">
                                 <i class="fas fa-heart text-danger me-1"></i>
-                                {{ $product->favorites->count() }} orang
+                                @totalFavorites($product->id) orang
                             </div>
                         </div>
                     </div>
@@ -113,29 +123,30 @@
                                 <i class="fab fa-whatsapp me-2"></i>Hubungi Sales
                             </button>
                             
-            @auth
-                                <div class="d-flex gap-2">
+                            <div class="d-flex gap-2">
+                                @auth
                                     <form action="{{ route('favorites.store', $product) }}" method="POST" class="flex-grow-1">
-                    @csrf
+                                        @csrf
                                         <button type="submit" class="btn btn-outline-danger w-100">
                                             <i class="fas fa-heart me-2"></i>Tambah ke Favorit
                                         </button>
-                </form>
-                                    <button type="button" class="btn btn-outline-primary" onclick="shareProduct()">
-                                        <i class="fas fa-share-alt"></i>
+                                    </form>
+                                @else
+                                    <button type="button" class="btn btn-outline-danger flex-grow-1 @isFavorite($product->id) btn-danger @endisFavorite" onclick="toggleFavorite({{ $product->id }})" id="favorite-btn-{{ $product->id }}">
+                                        <i class="fas fa-heart me-2 @isFavorite($product->id) text-white @endisFavorite"></i><span id="favorite-text-{{ $product->id }}">
+                                            @isFavorite($product->id)
+                                                Hapus dari Favorit
+                                            @else
+                                                Tambah ke Favorit
+                                            @endisFavorite
+                                        </span>
                                     </button>
-                                </div>
-                            @else
-                                <div class="d-flex gap-2">
-                                    <a href="{{ route('login') }}" class="btn btn-outline-danger flex-grow-1">
-                                        <i class="fas fa-heart me-2"></i>Login untuk Favorit
-                                    </a>
-                                    <button type="button" class="btn btn-outline-primary" onclick="shareProduct()">
-                                        <i class="fas fa-share-alt"></i>
-                                    </button>
-                                </div>
-            @endauth
-        </div>
+                                @endauth
+                                <button type="button" class="btn btn-outline-primary" onclick="shareProduct()">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
                     @else
                         <div class="stock-warning">
                             <div class="alert alert-warning d-flex align-items-center">
@@ -261,9 +272,21 @@
                                                 <span class="spec-value">{{ $product->storage }}</span>
                                             </div>
                                             <div class="spec-item">
+                                                <i class="fas fa-boxes me-2"></i>
+                                                <span class="spec-label">Stok:</span>
+                                                <span class="spec-value">
+                                                    <span class="badge bg-{{ $product->stock > 5 ? 'success' : ($product->stock > 0 ? 'warning' : 'danger') }}">
+                                                        {{ $product->stock > 0 ? $product->stock . ' tersedia' : 'Habis' }}
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="spec-item">
                                                 <i class="fas fa-heart me-2"></i>
                                                 <span class="spec-label">Favorit:</span>
-                                                <span class="spec-value">{{ $product->favorites->count() }} orang</span>
+                                                <span class="spec-value" id="favorites-count-{{ $product->id }}">
+                                                    <i class="fas fa-heart text-danger me-1"></i>
+                                                    @totalFavorites($product->id) orang
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

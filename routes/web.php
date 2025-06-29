@@ -42,13 +42,19 @@ Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name
 Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
 Route::post('/sales/{sale}/chat', [SaleController::class, 'chat'])->name('sales.chat');
 
+// Favorite routes (available for both guests and authenticated users)
+Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+Route::post('/favorites/{product}', [FavoriteController::class, 'store'])->name('favorites.store');
+Route::delete('/favorites/{product}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+Route::get('/favorites/{product}/check', [FavoriteController::class, 'check'])->name('favorites.check');
+Route::get('/favorites/count', [FavoriteController::class, 'count'])->name('favorites.count');
+Route::get('/favorites/{product}/count', [FavoriteController::class, 'getProductCount'])->name('favorites.product-count');
+Route::post('/favorites/{product}/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+Route::post('/favorites/clear-notification', [FavoriteController::class, 'clearNotification'])->name('favorites.clear-notification');
+Route::get('/favorites/refresh-product-counts', [FavoriteController::class, 'refreshProductCounts'])->name('favorites.refresh-product-counts');
+
 // Protected routes
 Route::middleware(['auth'])->group(function () {
-    // Favorite routes
-    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
-    Route::post('/favorites/{product}', [FavoriteController::class, 'store'])->name('favorites.store');
-    Route::delete('/favorites/{product}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
-
     // Admin routes
     Route::middleware([AdminMiddleware::class])->group(function () {
         // Product management

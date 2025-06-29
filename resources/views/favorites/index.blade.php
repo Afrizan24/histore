@@ -6,6 +6,14 @@
 <div class="container py-4">
     <h2 class="mb-4">Favorit Saya</h2>
 
+    @if(!auth()->check())
+    <div class="alert alert-info mb-4">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Mode Tamu:</strong> Favorit Anda disimpan sementara di browser. 
+        <a href="{{ route('login') }}" class="alert-link">Login</a> untuk menyimpan favorit secara permanen.
+    </div>
+    @endif
+
     @if($favorites->isEmpty())
     <div class="text-center py-5">
         <i class="fas fa-heart fa-3x text-muted mb-3"></i>
@@ -15,39 +23,90 @@
     </div>
     @else
     <div class="products">
-        @foreach($favorites as $favorite)
-        <div class="card">
-            <div class="position-relative">
-                @if($favorite->product->image)
-                <img src="{{ Storage::url($favorite->product->image) }}" alt="{{ $favorite->product->name }}" class="card-img-top">
-                @else
-                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                    <i class="fas fa-laptop fa-3x text-muted"></i>
+        @if(auth()->check())
+            {{-- For authenticated users --}}
+            @foreach($favorites as $favorite)
+            <div class="card">
+                <div class="position-relative">
+                    @if($favorite->product->image)
+                    <img src="{{ Storage::url($favorite->product->image) }}" alt="{{ $favorite->product->name }}" class="card-img-top">
+                    @else
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-laptop fa-3x text-muted"></i>
+                    </div>
+                    @endif
+                    <form action="{{ route('favorites.destroy', $favorite->product->id) }}" method="POST" class="position-absolute top-0 end-0 m-2">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-favorite">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </form>
+                    <h3>{{ $favorite->product->name }}</h3>
+                    <p class="price">Rp {{ number_format($favorite->product->price, 0, ',', '.') }}</p>
+                    <p class="favorite">
+                        <i class="fas fa-heart"></i> {{ $favorite->product->favorites_count }} terfavorite
+                    </p>
+                    <a href="{{ route('products.show', $favorite->product->slug) }}" class="btn">View Details</a>
                 </div>
-                @endif
-                <form action="{{ route('favorites.destroy', $favorite->product) }}" method="POST" class="position-absolute top-0 end-0 m-2">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn-favorite">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </form>
             </div>
-            <h3>{{ $favorite->product->name }}</h3>
-            <p class="price">Rp {{ number_format($favorite->product->price, 0, ',', '.') }}</p>
-            <p class="favorite">
-                <i class="fas fa-heart"></i> {{ $favorite->product->favorites_count }} terfavorite
-            </p>
-            <a href="{{ route('products.show', $favorite->product->slug) }}" class="btn">View Details</a>
-        </div>
-        @endforeach
+            @endforeach
+        @else
+            {{-- For guest users (session data) --}}
+            @foreach($favorites as $favorite)
+            <div class="card">
+                <div class="position-relative">
+                    @if($favorite->image)
+                    <img src="{{ Storage::url($favorite->image) }}" alt="{{ $favorite->name }}" class="card-img-top">
+                    @else
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-laptop fa-3x text-muted"></i>
+                    </div>
+                    @endif
+                    <form action="{{ route('favorites.destroy', $favorite->id) }}" method="POST" class="position-absolute top-0 end-0 m-2">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-favorite">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </form>
+                    <h3>{{ $favorite->name }}</h3>
+                    <p class="price">Rp {{ number_format($favorite->price, 0, ',', '.') }}</p>
+                    <a href="{{ route('products.show', $favorite->slug) }}" class="btn">View Details</a>
+                </div>
+            </div>
+            @endforeach
+        @endif
     </div>
 
-    <div class="d-flex justify-content-center mt-4">
-        {{ $favorites->links() }}
-    </div>
+    @if(auth()->check())
+        <div class="d-flex justify-content-center mt-4">
+            {{ $favorites->links() }}
+        </div>
+    @endif
     @endif
 </div>
+
+@if(!auth()->check())
+<script>
+    // Clear notification flag when leaving the page
+    window.addEventListener('beforeunload', function() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        if (csrfToken) {
+            fetch('/favorites/clear-notification', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).catch(error => {
+                console.error('Error clearing notification:', error);
+            });
+        }
+    });
+</script>
+@endif
 
 <style>
 /* Custom User Pagination Styles - White & Black Theme */

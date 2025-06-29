@@ -182,14 +182,24 @@
                                 <i class="fas fa-heart"></i>
                             </button>
                         </form>
+                        @else
+                        <button type="button" class="btn-favorite position-absolute top-0 end-0 m-2 @isFavorite($product->id) favorited @endisFavorite" onclick="toggleFavorite({{ $product->id }})" id="favorite-btn-{{ $product->id }}">
+                            <i class="fas fa-heart @isFavorite($product->id) favorited @endisFavorite"></i>
+                        </button>
                         @endauth
                     </div>
                     <div class="mt-3">
                         <h5 class="card-title">{{ $product->name }}</h5>
                         <p class="price-text">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-                        <p class="favorites-count">
-                            <i class="fas fa-heart"></i> {{ $product->favorites_count }} terfavorite
+                        <p class="favorites-count" id="favorites-count-{{ $product->id }}">
+                            <i class="fas fa-heart"></i> @totalFavorites($product->id) terfavorite
                         </p>
+                        <div class="stock-info mb-2">
+                            <span class="badge bg-{{ $product->stock > 5 ? 'success' : ($product->stock > 0 ? 'warning' : 'danger') }}">
+                                <i class="fas fa-boxes me-1"></i>
+                                {{ $product->stock > 0 ? $product->stock . ' tersedia' : 'Habis' }}
+                            </span>
+                        </div>
                         <div class="d-flex gap-2">
                             <a href="{{ route('products.show', $product->slug) }}" class="btn btn-primary btn-sm flex-grow-1">View Details</a>
                         </div>

@@ -62,6 +62,17 @@
                     </select>
                 </div>
             </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="form-group">
+                    <label for="stock" class="form-label">Stock Status</label>
+                    <select class="form-select" id="stock" name="stock">
+                        <option value="">All Stock</option>
+                        <option value="in_stock" {{ request('stock') == 'in_stock' ? 'selected' : '' }}>In Stock</option>
+                        <option value="low_stock" {{ request('stock') == 'low_stock' ? 'selected' : '' }}>Low Stock (≤5)</option>
+                        <option value="out_of_stock" {{ request('stock') == 'out_of_stock' ? 'selected' : '' }}>Out of Stock</option>
+                    </select>
+                </div>
+            </div>
             <div class="col-lg-2 col-md-6">
                 <div class="form-group">
                     <label class="form-label">&nbsp;</label>
@@ -102,6 +113,7 @@
                         <th class="product-name-col">Product Name</th>
                         <th class="product-category-col">Category</th>
                         <th class="product-price-col">Price</th>
+                        <th class="product-stock-col">Stock</th>
                         <th class="product-specs-col">Specifications</th>
                         <th class="product-status-col">Status</th>
                         <th class="product-actions-col">Actions</th>
@@ -135,6 +147,13 @@
                         <td class="product-price-cell">
                             <div class="price-info">
                                 <span class="price-amount">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                            </div>
+                        </td>
+                        <td class="product-stock-cell">
+                            <div class="stock-info">
+                                <span class="stock-amount {{ $product->stock == 0 ? 'stock-empty' : ($product->stock <= 5 ? 'stock-low' : '') }}">
+                                    {{ $product->stock }}
+                                </span>
                             </div>
                         </td>
                         <td class="product-specs-cell">
@@ -422,6 +441,30 @@
     font-weight: 700;
     color: #28a745;
     font-size: 1.1rem;
+}
+
+/* Stock */
+.stock-amount {
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.stock-amount:not(.stock-empty) {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.stock-amount.stock-empty {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.stock-amount.stock-low {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    color: white;
 }
 
 /* Specifications */
